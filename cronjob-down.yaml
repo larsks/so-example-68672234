@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scale-web-down
+spec:
+  schedule: "00 00 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: oc-client-sa
+          restartPolicy: Never
+          containers:
+          - image: docker.io/larsks/openshift-client
+            args:
+              - scale
+              - deployment/web
+              - --replicas=0
+            name: oc-scale-down
